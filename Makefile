@@ -1,6 +1,6 @@
 source = src
 compiler = odin
-executable = tetrio.exe
+executable = pacman.exe
 debug_dir = build/debug
 release_dir = build/release
 
