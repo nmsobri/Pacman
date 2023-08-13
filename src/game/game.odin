@@ -1,8 +1,8 @@
-package main
+package game
 
-import "util"
-import "state"
-import "config"
+import "../util"
+import "../state"
+import "../config"
 import "core:fmt"
 import sdl "vendor:sdl2"
 import "vendor:sdl2/mixer"
@@ -16,7 +16,7 @@ Game :: struct {
   close:         proc(_: ^Game),
   loop:          proc(_: ^Game),
 
-  //prop
+  //Properties
   window:        ^sdl.Window,
   renderer:      ^sdl.Renderer,
   timer:         ^util.Timer,
@@ -52,6 +52,7 @@ Game_Init :: proc() -> (Game, Errno) {
   return game, ERROR_NONE
 }
 
+
 @(private = "file")
 loop :: proc(self: ^Game) {
   ever := true
@@ -73,9 +74,12 @@ loop :: proc(self: ^Game) {
   }
 }
 
+
 @(private = "file")
 close :: proc(self: ^Game) {
   sdl.DestroyWindow(self.window)
   sdl.DestroyRenderer(self.renderer)
+  free(self.state_machine)
+  free(self.timer)
   sdl.Quit()
 }

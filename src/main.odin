@@ -1,15 +1,16 @@
 package main
 
+import "game"
 import "core:fmt"
 
 main :: proc() {
-  game, err := Game_Init()
+  g, err := game.Game_Init()
 
-  if err != ERROR_NONE {
+  if err != game.ERROR_NONE {
     fmt.eprintf("Cannot init SDL")
     return
   }
 
-  game->loop()
-  defer game->close()
+  g->loop()
+  defer g->close()
 }

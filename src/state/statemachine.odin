@@ -1,4 +1,5 @@
 package state
+
 import "core:fmt"
 
 StateMachine :: struct {

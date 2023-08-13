@@ -1,15 +1,21 @@
 package state
 
+import "../util"
+import "../config"
 import sdl "vendor:sdl2"
+
+FONT_DATA :: #load("../../res/Futura.ttf")
 
 Start :: struct {
   using vtable:  StateInterface,
   window:        ^sdl.Window,
   renderer:      ^sdl.Renderer,
   state_machine: ^StateMachine,
+  font:          ^util.BitmapFont,
 }
 
-Start_Init :: proc(window: ^sdl.Window, renderer: ^sdl.Renderer, state_machine: ^StateMachine) -> ^Start {
+
+Start_Init :: proc(window: ^sdl.Window, renderer: ^sdl.Renderer, state_machine: ^StateMachine) -> ^StateInterface {
   start := new(Start)
 
   start.update = update
@@ -23,15 +29,31 @@ Start_Init :: proc(window: ^sdl.Window, renderer: ^sdl.Renderer, state_machine: 
   start.window = window
   start.renderer = renderer
   start.state_machine = state_machine
+  start.font, _ = util.BitmapFont_init(start.renderer, FONT_DATA, 25)
 
   return start
 }
 
 
+@(private = "file")
 update :: proc(self: ^StateInterface) {}
 
-render :: proc(self: ^StateInterface) {}
 
+@(private = "file")
+render :: proc(self: ^StateInterface) {
+  self := self.variant.(^Start)
+
+  sdl.SetRenderDrawColor(self.renderer, 0xFF, 0xFF, 0xFF, 0xFF)
+  sdl.RenderClear(self.renderer)
+
+  text := "Press Enter To Start"
+  text_width := self.font->calculateTextWidth(text)
+  self.font->renderText(i32((config.WINDOW_WIDTH / 2) - (text_width / 2)), i32(config.WINDOW_HEIGHT / 2 - (self.font->getGlyphHeight() / 2)), text, 255, 0, 0)
+  sdl.RenderPresent(self.renderer)
+}
+
+
+@(private = "file")
 input :: proc(self: ^StateInterface) -> bool {
   self, ok := self.variant.(^Start)
   assert(ok, "Cannot get Start State")
@@ -47,8 +69,8 @@ input :: proc(self: ^StateInterface) -> bool {
       case .ESCAPE:
         return false
       case .RETURN:
-        //   play_state := PlayState_init(self.window, self.renderer, self.state_machine)
-        //   self.state_machine->changeState(play_state)
+        play_state := Play_init(self.window, self.renderer, self.state_machine)
+        self.state_machine->changeState(play_state)
         return true
       }
     }
@@ -57,14 +79,20 @@ input :: proc(self: ^StateInterface) -> bool {
   return true
 }
 
+
+@(private = "file")
 stateID :: proc(self: ^StateInterface) -> string {
   return "Start"
 }
 
+
+@(private = "file")
 onEnter :: proc(self: ^StateInterface) -> bool {
   return false
 }
 
+
+@(private = "file")
 onExit :: proc(self: ^StateInterface) -> bool {
   return false
 }
