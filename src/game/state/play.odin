@@ -2,15 +2,16 @@ package state
 
 import "core:os"
 import "core:fmt"
+import "../entity"
 import "core:strings"
 import sdl "vendor:sdl2"
-
 
 Play :: struct {
   using vtable:  StateInterface,
   window:        ^sdl.Window,
   renderer:      ^sdl.Renderer,
   state_machine: ^StateMachine,
+  board:         entity.Board,
 }
 
 Play_init :: proc(window: ^sdl.Window, renderer: ^sdl.Renderer, state_machine: ^StateMachine) -> ^StateInterface {
@@ -27,16 +28,6 @@ Play_init :: proc(window: ^sdl.Window, renderer: ^sdl.Renderer, state_machine: ^
   play.window = window
   play.renderer = renderer
   play.state_machine = state_machine
-
-  data, ok := os.read_entire_file("res/level/level1.txt")
-  assert(ok, "Error reading level file")
-  defer delete(data)
-
-  it := string(data)
-
-  for line in strings.split_lines_iterator(&it) {
-    fmt.println(line)
-  }
 
   return play
 }

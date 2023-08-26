@@ -1,10 +1,10 @@
 package state
 
-import "../util"
-import "../config"
+import "../../util"
+import "../../config"
 import sdl "vendor:sdl2"
 
-FONT_DATA :: #load("../../res/Futura.ttf")
+FONT_DATA :: #load("../../../res/Futura.ttf")
 
 Start :: struct {
   using vtable:  StateInterface,

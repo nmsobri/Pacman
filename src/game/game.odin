@@ -1,7 +1,7 @@
 package game
 
 import "../util"
-import "../state"
+import "./state"
 import "../config"
 import "core:fmt"
 import sdl "vendor:sdl2"
